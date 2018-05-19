@@ -1,10 +1,13 @@
-struct Sheep { naked: bool, name: &'static str }
-struct Duck { naked: bool, name: &'static str }
+struct Sheep {
+    naked: bool,
+    name: &'static str,
+}
+struct Duck {
+    naked: bool,
+    name: &'static str,
+}
 
 trait Animal {
-    // Static method signature; `Self` refers to the implementor type.
-    fn new(name: &'static str) -> Self;
-
     // Instance method signatures; these will return a string.
     fn name(&self) -> &'static str;
     fn noise(&self) -> &'static str;
@@ -51,11 +54,6 @@ impl Duck {
 
 // Implement the `Animal` trait for `Sheep`.
 impl Animal for Sheep {
-    // `Self` is the implementor type: `Sheep`.
-    fn new(name: &'static str) -> Sheep {
-        Sheep { name: name, naked: false }
-    }
-
     fn name(&self) -> &'static str {
         self.name
     }
@@ -67,7 +65,7 @@ impl Animal for Sheep {
             "baaaaah!"
         }
     }
-    
+
     // Default trait methods can be overridden.
     fn talk(&self) {
         // For example, we can add some quiet contemplation.
@@ -76,11 +74,6 @@ impl Animal for Sheep {
 }
 
 impl Animal for Duck {
-    // `Self` is the implementor type: `Duck`.
-    fn new(name: &'static str) -> Duck {
-        Duck { name: name, naked: false }
-    }
-
     fn name(&self) -> &'static str {
         self.name
     }
@@ -92,7 +85,7 @@ impl Animal for Duck {
             "Quak Quak!"
         }
     }
-    
+
     // Default trait methods can be overridden.
     fn talk(&self) {
         // For example, we can add some quiet contemplation.
@@ -102,15 +95,30 @@ impl Animal for Duck {
 
 fn main() {
     // Type annotation is necessary in this case.
-    let mut dolly: Sheep = Animal::new("Dolly");
-    let mut donald: Duck = Animal::new("Donald");
+    let dolly: Sheep = Sheep {
+        name: "Dolly",
+        naked: false,
+    };
+    let donald: Duck = Duck {
+        name: "Donald",
+        naked: false,
+    };
     // TODO ^ Try removing the type annotations.
 
-    dolly.talk();
+    let mut vec: Vec<Box<Animal>> = Vec::new();
+    vec.push(Box::new(dolly));
+    vec.push(Box::new(donald));
+
+    for animal in vec.iter() {
+        animal.talk();
+        //animal.shear();
+        animal.talk();    
+    }
+    /*dolly.talk();
     dolly.shear();
     dolly.talk();
     
     donald.talk();
     donald.shear();
-    donald.talk();
+    donald.talk();*/
 }
